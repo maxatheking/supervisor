@@ -1,0 +1,12 @@
+FROM ubuntu:18.04
+ENV TZ=Europe/Belgrade
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get update && apt-get install -y supervisor nginx nodejs npm
+RUN mkdir /var/www/nodeapp/
+COPY start.sh /var/www/nodeapp/ 
+COPY server.js  /var/www/nodeapp/
+COPY package.json /var/www/nodeapp/
+COPY default /etc/nginx/sites-available/default
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+EXPOSE 80 3000
+CMD ["/usr/bin/supervisord"]
